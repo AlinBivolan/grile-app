@@ -39,7 +39,7 @@
 
                 <div class="mb-6">
                     <img
-                        src="{{ Storage::disk('s3')->url($question->image_path) }}"
+                        src="{{ Storage::disk('grile_images')->url($question->image_path) }}"
                         alt="Întrebarea {{ $sessionQuestion->display_order }}"
                         class="w-full border rounded">
                 </div>
