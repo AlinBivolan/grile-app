@@ -69,7 +69,7 @@ class QuestionController extends Controller
 
     $imagePath = $request->file('image')->store(
     'questions',
-    'grile_images'
+    'private'
 );
 
     $question = Question::create([
@@ -143,7 +143,7 @@ class QuestionController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $updateData['image_path'] = $request->file('image')->store('questions', 'grile_images');
+            $updateData['image_path'] = $request->file('image')->store('questions', 'private');
         }
 
         $question->update($updateData);
