@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html.dark body {
+    background-color: #030712;
+    color: #f3f4f6;
+}
+
+html.dark .bg-white {
+    background-color: #111827 !important;
+}
+
+html.dark .bg-gray-100 {
+    background-color: #030712 !important;
+}
+
+html.dark .bg-gray-50 {
+    background-color: #1f2937 !important;
+}
+
+html.dark .text-gray-800,
+html.dark .text-gray-900 {
+    color: #f9fafb !important;
+}
+
+html.dark .text-gray-500,
+html.dark .text-gray-600,
+html.dark .text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-gray-300,
+html.dark .border {
+    border-color: #374151 !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+    background-color: #111827;
+    color: #f9fafb;
+    border-color: #4b5563;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #9ca3af;
+}
+
+html.dark .shadow {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.answer-option {
+    background-color: #ffffff;
+    color: #111827;
+}
+
+.answer-option:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+html.dark .answer-option {
+    background-color: #111827;
+    color: #f9fafb;
+    border-color: #374151;
+}
+
+html.dark .answer-option:hover {
+    background-color: #1f2937;
+    color: #ffffff;
+    border-color: #4b5563;
+}
+
+html.dark .answer-option:hover .answer-text {
+    color: #ffffff;
+}
