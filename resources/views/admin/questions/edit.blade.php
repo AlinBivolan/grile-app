@@ -36,7 +36,7 @@
 
                     <div class="mb-4">
                         <label class="block font-medium mb-1">Imagine curentă</label>
-                        <img src="{{ asset('storage/' . $question->image_path) }}"
+                        <img src="{{ Storage::disk('grile_images')->url($question->image_path) }}"
                              class="w-96 border rounded mb-3">
 
                         <label class="block font-medium mb-1">Schimbă imaginea</label>

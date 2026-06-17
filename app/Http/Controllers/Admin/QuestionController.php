@@ -67,7 +67,10 @@ class QuestionController extends Controller
             ->withInput();
     }
 
-    $imagePath = $request->file('image')->store('questions', 's3');
+    $imagePath = $request->file('image')->store(
+    'questions',
+    'grile_images'
+);
 
     $question = Question::create([
         'category_id' => $data['category_id'],
@@ -140,7 +143,7 @@ class QuestionController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $updateData['image_path'] = $request->file('image')->store('questions', 's3');
+            $updateData['image_path'] = $request->file('image')->store('questions', 'grile_images');
         }
 
         $question->update($updateData);
