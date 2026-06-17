@@ -20,6 +20,7 @@
                       enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="answer_type" value="multiple">
 
                     <div class="mb-4">
                         <label class="block font-medium mb-1">Categorie</label>

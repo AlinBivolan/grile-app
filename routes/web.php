@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OnlineUserController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaderboardController;
@@ -9,8 +10,10 @@ use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+})->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -46,23 +49,22 @@ Route::middleware('auth')->group(function () {
         [QuizController::class, 'answer']
     )->name('quiz.answer');
 
-    Route::post(
-        '/quiz/{session}/abandon',
-        [QuizController::class, 'abandon']
-    )->name('quiz.abandon');
+    Route::post('/quiz/{session}/abandon', [QuizController::class, 'abandon'])
+        ->name('quiz.abandon');
 
-    Route::get(
-        '/leaderboard',
-        [LeaderboardController::class, 'index']
-    )->name('leaderboard.index');
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])
+        ->name('leaderboard.index');
 });
 
-Route::middleware('auth')
+Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('questions', QuestionController::class);
+
+        Route::get('/online-users', [OnlineUserController::class, 'index'])
+            ->name('online-users.index');
     });
 
 require __DIR__.'/auth.php';

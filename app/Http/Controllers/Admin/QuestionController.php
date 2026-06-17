@@ -32,7 +32,7 @@ class QuestionController extends Controller
         'category_id' => ['required', 'exists:categories,id'],
         'image' => ['required', 'image', 'max:4096'],
         'explanation' => ['nullable', 'string'],
-        'answer_type' => ['required', 'in:single,multiple'],
+        'answer_type' => ['nullable'],
         'difficulty' => ['required', 'integer', 'min:1', 'max:5'],
 
         'answers' => ['required', 'array'],
@@ -73,7 +73,7 @@ class QuestionController extends Controller
         'category_id' => $data['category_id'],
         'image_path' => $imagePath,
         'explanation' => $data['explanation'] ?? null,
-        'answer_type' => $data['answer_type'],
+        'answer_type' => $data['multiple'],
         'difficulty' => $data['difficulty'],
         'is_active' => true,
     ]);
@@ -106,7 +106,7 @@ class QuestionController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'image' => ['nullable', 'image', 'max:4096'],
             'explanation' => ['nullable', 'string'],
-            'answer_type' => ['required', 'in:single,multiple'],
+            'answer_type' => ['nullable'],
             'difficulty' => ['required', 'integer', 'min:1', 'max:5'],
             'is_active' => ['nullable'],
 
@@ -135,7 +135,7 @@ class QuestionController extends Controller
         $updateData = [
             'category_id' => $data['category_id'],
             'explanation' => $data['explanation'] ?? null,
-            'answer_type' => $data['answer_type'],
+            'answer_type' => $data['multiple'],
             'difficulty' => $data['difficulty'],
             'is_active' => isset($data['is_active']),
         ];
