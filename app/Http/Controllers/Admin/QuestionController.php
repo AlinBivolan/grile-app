@@ -67,13 +67,13 @@ class QuestionController extends Controller
             ->withInput();
     }
 
-    $imagePath = $request->file('image')->store('questions', 'public');
+    $imagePath = $request->file('image')->store('questions', 's3');
 
     $question = Question::create([
         'category_id' => $data['category_id'],
         'image_path' => $imagePath,
         'explanation' => $data['explanation'] ?? null,
-        'answer_type' => $data['multiple'],
+        'answer_type' => 'multiple',
         'difficulty' => $data['difficulty'],
         'is_active' => true,
     ]);
@@ -135,13 +135,12 @@ class QuestionController extends Controller
         $updateData = [
             'category_id' => $data['category_id'],
             'explanation' => $data['explanation'] ?? null,
-            'answer_type' => $data['multiple'],
             'difficulty' => $data['difficulty'],
             'is_active' => isset($data['is_active']),
         ];
 
         if ($request->hasFile('image')) {
-            $updateData['image_path'] = $request->file('image')->store('questions', 'public');
+            $updateData['image_path'] = $request->file('image')->store('questions', 's3');
         }
 
         $question->update($updateData);
