@@ -65,6 +65,9 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/online-users', [OnlineUserController::class, 'index'])
             ->name('online-users.index');
+
+        Route::get('/questions/{question}/image', [QuizController::class, 'questionImage'])
+            ->name('questions.image');
     });
 
 require __DIR__.'/auth.php';

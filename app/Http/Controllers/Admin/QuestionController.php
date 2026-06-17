@@ -142,9 +142,12 @@ class QuestionController extends Controller
             'is_active' => isset($data['is_active']),
         ];
 
-        if ($request->hasFile('image')) {
-            $updateData['image_path'] = $request->file('image')->store('questions', 'private');
-        }
+if ($request->hasFile('image')) {
+    $updateData['image_path'] = $request->file('image')->store(
+        'questions',
+        'private'
+    );
+}
 
         $question->update($updateData);
 

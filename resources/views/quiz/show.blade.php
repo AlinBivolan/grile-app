@@ -39,7 +39,7 @@
 
                 <div class="mb-6">
                     <img
-                        src="{{ Storage::disk('private')->url($question->image_path) }}"
+                        src="{{ route('questions.image', $question) }}"
                         alt="Întrebarea {{ $sessionQuestion->display_order }}"
                         class="w-full border rounded">
                 </div>
