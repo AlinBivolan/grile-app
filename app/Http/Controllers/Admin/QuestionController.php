@@ -43,7 +43,7 @@ class QuestionController extends Controller
             ->filter(fn ($answer) => filled($answer['answer_text'] ?? null))
             ->values();
 
-        if ($answers->count() < 3 || $answers->count() > 6) {
+        if ($answers->count() < 3 || $answers->count() > 9) {
 return back()
     ->withErrors([
         'answers' => 'Trebuie să introduci între 3 și 9 răspunsuri.',
@@ -109,7 +109,7 @@ return back()
             ->filter(fn ($answer) => filled($answer['answer_text'] ?? null))
             ->values();
 
-        if ($answers->count() < 3 || $answers->count() > 6) {
+        if ($answers->count() < 3 || $answers->count() > 9) {
 return back()
     ->withErrors([
         'answers' => 'Trebuie să introduci între 3 și 9 răspunsuri.',
