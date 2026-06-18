@@ -53,39 +53,51 @@
                                   class="w-full border-gray-300 rounded">{{ old('explanation') }}</textarea>
                     </div>
 
-                    <h3 class="font-bold mt-6 mb-3">Răspunsuri</h3>
+                    <h3 class="font-bold mt-6 mb-2">Răspunsuri</h3>
 
-                    <p class="text-sm text-gray-600 mb-4">
-                        Completează între 3 și 6 variante. Feedback-ul este opțional.
-                    </p>
+<p class="text-sm text-gray-500 mb-4">
+    Completează între 3 și 9 variante. Cele nefolosite pot rămâne goale.
+</p>
 
-                    @for ($i = 0; $i < 6; $i++)
-                        <div class="mb-4 border rounded p-4">
-                            <label class="block font-medium mb-1">
-                                Răspuns {{ $i + 1 }}
-                            </label>
+@for ($i = 0; $i < 9; $i++)
+    <div class="mb-4 border rounded p-4">
+        <label class="block font-medium mb-1">
+            Răspuns {{ $i + 1 }}
+        </label>
 
-                            <textarea name="answers[{{ $i }}][answer_text]"
-                                      rows="2"
-                                      class="w-full border-gray-300 rounded">{{ old("answers.$i.answer_text") }}</textarea>
+        <textarea
+            name="answers[{{ $i }}][answer_text]"
+            rows="2"
+            class="w-full border-gray-300 rounded"
+            placeholder="Scrie varianta de răspuns...">{{ old("answers.$i.answer_text") }}</textarea>
 
-                            <label class="flex items-center gap-2 mt-2">
-                                <input type="checkbox"
-                                       name="answers[{{ $i }}][is_correct]"
-                                       value="1"
-                                       @checked(old("answers.$i.is_correct"))>
-                                Corect
-                            </label>
+        <label class="flex items-center gap-2 mt-3">
+            <input
+                type="checkbox"
+                name="answers[{{ $i }}][is_correct]"
+                value="1"
+                @checked(old("answers.$i.is_correct"))>
 
-                            <label class="block font-medium mt-3 mb-1">
-                                Feedback pentru acest răspuns, opțional
-                            </label>
+            <span class="font-medium">
+                Varianta este corectă
+            </span>
+        </label>
 
-                            <textarea name="answers[{{ $i }}][feedback]"
-                                      rows="2"
-                                      class="w-full border-gray-300 rounded">{{ old("answers.$i.feedback") }}</textarea>
-                        </div>
-                    @endfor
+        <details class="mt-3">
+            <summary class="cursor-pointer text-sm text-blue-600 font-medium">
+                + Adaugă feedback opțional
+            </summary>
+
+            <div class="mt-3">
+                <textarea
+                    name="answers[{{ $i }}][feedback]"
+                    rows="2"
+                    class="w-full border-gray-300 rounded"
+                    placeholder="Explicație pentru această variantă...">{{ old("answers.$i.feedback") }}</textarea>
+            </div>
+        </details>
+    </div>
+@endfor
 
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
                         Salvează întrebarea

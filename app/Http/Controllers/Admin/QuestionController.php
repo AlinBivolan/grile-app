@@ -44,9 +44,11 @@ class QuestionController extends Controller
             ->values();
 
         if ($answers->count() < 3 || $answers->count() > 6) {
-            return back()->withErrors([
-                'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
-            ])->withInput();
+return back()
+    ->withErrors([
+        'answers' => 'Trebuie să introduci între 3 și 9 răspunsuri.',
+    ])
+    ->withInput();
         }
 
         if ($answers->filter(fn ($answer) => isset($answer['is_correct']))->count() < 1) {
@@ -108,9 +110,11 @@ class QuestionController extends Controller
             ->values();
 
         if ($answers->count() < 3 || $answers->count() > 6) {
-            return back()->withErrors([
-                'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
-            ])->withInput();
+return back()
+    ->withErrors([
+        'answers' => 'Trebuie să introduci între 3 și 9 răspunsuri.',
+    ])
+    ->withInput();
         }
 
         if ($answers->filter(fn ($answer) => isset($answer['is_correct']))->count() < 1) {

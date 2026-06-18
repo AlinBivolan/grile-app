@@ -79,3 +79,55 @@ html.dark .answer-option:hover {
 html.dark .answer-option:hover .answer-text {
     color: #ffffff;
 }
+
+/* Feedback răspunsuri în dark mode */
+
+html.dark .bg-green-50 {
+    background-color: #052e16 !important;
+}
+
+html.dark .bg-green-100 {
+    background-color: #14532d !important;
+}
+
+html.dark .text-green-700,
+html.dark .text-green-800,
+html.dark .text-green-900 {
+    color: #bbf7d0 !important;
+}
+
+html.dark .border-green-500 {
+    border-color: #22c55e !important;
+}
+
+html.dark .bg-red-50 {
+    background-color: #450a0a !important;
+}
+
+html.dark .bg-red-100 {
+    background-color: #7f1d1d !important;
+}
+
+html.dark .text-red-700,
+html.dark .text-red-800,
+html.dark .text-red-900 {
+    color: #fecaca !important;
+}
+
+html.dark .border-red-500 {
+    border-color: #ef4444 !important;
+}
+
+html.dark .bg-blue-50 {
+    background-color: #172554 !important;
+}
+
+html.dark .text-blue-700,
+html.dark .text-blue-800,
+html.dark .text-blue-900 {
+    color: #bfdbfe !important;
+}
+
+html.dark .border-blue-300 {
+    border-color: #3b82f6 !important;
+}
