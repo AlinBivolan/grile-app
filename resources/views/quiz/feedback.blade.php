@@ -1,171 +1,125 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Alege modul de lucru
+            Rezultatul răspunsului
         </h2>
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow rounded p-6">
 
-            @if ($errors->any())
-                <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
+                @if (session('success'))
+                    <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if ($isCorrect)
+                    <div class="mb-6 p-6 bg-green-100 border-2 border-green-500 rounded-lg">
+                        <div class="text-2xl font-bold text-green-800">
+                            ✓ Răspuns corect
+                        </div>
+                        <div class="mt-1 text-green-700">
+                            Ai primit 10 puncte.
+                        </div>
+                    </div>
+                @else
+                    <div class="mb-6 p-6 bg-red-100 border-2 border-red-500 rounded-lg">
+                        <div class="text-2xl font-bold text-red-800">
+                            ✗ Răspuns greșit
+                        </div>
+                        <div class="mt-1 text-red-700">
+                            Mai jos vezi răspunsul tău și răspunsul corect.
+                        </div>
+                    </div>
+                @endif
+
+                <div class="mb-6">
+                    <img
+                        src="{{ route('questions.image', $question) }}"
+                        alt="Imagine întrebare"
+                        class="w-full border rounded">
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold text-lg mb-3">Răspunsul tău</h3>
+
+                    @foreach ($selectedAnswers as $answer)
+                        <div class="border-2 rounded p-4 mb-3
+                            {{ $answer->is_correct
+                                ? 'border-green-500 bg-green-50'
+                                : 'border-red-500 bg-red-50' }}">
+
+                            <div class="font-semibold">
+                                {{ $answer->answer_text }}
+                            </div>
+
+                            <div class="mt-2 font-bold
+                                {{ $answer->is_correct ? 'text-green-700' : 'text-red-700' }}">
+                                {{ $answer->is_correct
+                                    ? '✓ Această variantă este corectă.'
+                                    : '✗ Această variantă este greșită.' }}
+                            </div>
+
+                            @if ($answer->feedback)
+                                <div class="mt-3 text-sm text-gray-700">
+                                    {{ $answer->feedback }}
+                                </div>
+                            @endif
+                        </div>
                     @endforeach
                 </div>
-            @endif
 
-            @if (session('success'))
-                <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
+                @unless ($isCorrect)
+                    <div class="mb-6">
+                        <h3 class="font-bold text-lg mb-3">Răspunsul corect</h3>
 
-            <div class="bg-white shadow rounded p-6 mb-6">
-                <h3 class="text-xl font-bold mb-4">
-                    Toate categoriile
-                </h3>
+                        @foreach ($correctAnswers as $answer)
+                            <div class="border-2 border-green-500 bg-green-50 rounded p-4 mb-3">
+                                <div class="font-semibold text-green-900">
+                                    ✓ {{ $answer->answer_text }}
+                                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <form method="POST" action="{{ route('quiz.start') }}"
-                          class="border rounded p-4">
-                        @csrf
-                        <input type="hidden" name="mode" value="training">
+                                @if ($answer->feedback)
+                                    <div class="mt-3 text-sm text-green-800">
+                                        {{ $answer->feedback }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endunless
 
-                        <div class="font-bold mb-2">Antrenament</div>
+                @if ($question->explanation)
+                    <div class="mb-6 p-5 bg-blue-50 border border-blue-300 rounded">
+                        <h3 class="font-bold text-lg mb-2">Explicație</h3>
+                        <p class="whitespace-pre-line">{{ $question->explanation }}</p>
+                    </div>
+                @endif
 
-                        <p class="text-sm text-gray-600 mb-4">
-                            Toate întrebările, în ordine aleatorie.
-                        </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('quiz.show', $session) }}"
+                       class="px-5 py-3 bg-blue-600 text-white rounded font-bold">
+                        Următoarea întrebare
+                    </a>
 
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded">
-                            Începe
-                        </button>
-                    </form>
-
-                    <form method="POST" action="{{ route('quiz.start') }}"
-                          class="border rounded p-4">
-                        @csrf
-                        <input type="hidden" name="mode" value="exam">
-
-                        <div class="font-bold mb-2">Examen</div>
-
-                        <p class="text-sm text-gray-600 mb-4">
-                            30 de întrebări aleatorii, fără feedback imediat.
-                        </p>
-
-                        <button class="px-4 py-2 bg-indigo-600 text-white rounded">
-                            Începe
-                        </button>
-                    </form>
-
-                    <form method="POST" action="{{ route('quiz.start') }}"
-                          class="border rounded p-4">
-                        @csrf
-                        <input type="hidden" name="mode" value="hardcore">
-
-                        <div class="font-bold mb-2">Hardcore</div>
-
-                        <p class="text-sm text-gray-600 mb-4">
-                            Prioritizează întrebările la care ai greșit.
-                        </p>
-
-                        <button class="px-4 py-2 bg-red-600 text-white rounded">
-                            Începe
-                        </button>
-                    </form>
-
-                    <form method="POST" action="{{ route('quiz.start') }}"
-                          class="border rounded p-4">
-                        @csrf
-                        <input type="hidden" name="mode" value="wrong">
-
-                        <div class="font-bold mb-2">Întrebări greșite</div>
-
-                        <p class="text-sm text-gray-600 mb-4">
-                            Repetă întrebările la care ai greșit.
-                        </p>
-
-                        <button class="px-4 py-2 bg-orange-600 text-white rounded">
-                            Începe
-                        </button>
-                    </form>
-
-                    <form method="POST" action="{{ route('quiz.start') }}"
-                          class="border rounded p-4">
-                        @csrf
-                        <input type="hidden" name="mode" value="unseen">
-
-                        <div class="font-bold mb-2">Întrebări nevăzute</div>
-
-                        <p class="text-sm text-gray-600 mb-4">
-                            Întrebări pe care nu le-ai rezolvat încă.
-                        </p>
-
-                        <button class="px-4 py-2 bg-green-600 text-white rounded">
-                            Începe
-                        </button>
-                    </form>
-
-                    <form method="POST" action="{{ route('quiz.start') }}"
-                          class="border rounded p-4">
-                        @csrf
-                        <input type="hidden" name="mode" value="difficult">
-
-                        <div class="font-bold mb-2">
-                            ⭐ Întrebări dificile
-                        </div>
-
-                        <p class="text-sm text-gray-600 mb-2">
-                            Întrebările marcate de tine pentru repetare.
-                        </p>
-
-                        <p class="text-sm font-bold mb-4">
-                            {{ $difficultCount }} întrebări
-                        </p>
-
-                        <button class="px-4 py-2 bg-purple-600 text-white rounded">
-                            Începe
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="bg-white shadow rounded p-6">
-                <h3 class="text-xl font-bold mb-4">
-                    Categorii
-                </h3>
-
-                @foreach ($categories as $category)
                     <form method="POST"
-                          action="{{ route('quiz.start') }}"
-                          class="border rounded p-4 mb-4">
+                          action="{{ route('questions.difficult', $question) }}">
                         @csrf
 
-                        <input type="hidden"
-                               name="category_id"
-                               value="{{ $category->id }}">
-
-                        <input type="hidden"
-                               name="mode"
-                               value="category">
-
-                        <div class="font-bold">
-                            {{ $category->name }}
-                        </div>
-
-                        <div class="text-sm text-gray-500 mb-3">
-                            {{ $category->questions_count }} întrebări
-                        </div>
-
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded">
-                            Fă toate întrebările
+                        <button class="px-5 py-3 rounded font-bold
+                            {{ $isDifficult
+                                ? 'bg-gray-600 text-white'
+                                : 'bg-purple-600 text-white' }}">
+                            {{ $isDifficult
+                                ? 'Elimină din dificile'
+                                : '⭐ Marchează ca dificilă' }}
                         </button>
                     </form>
-                @endforeach
-            </div>
+                </div>
 
+            </div>
         </div>
     </div>
 </x-app-layout>
