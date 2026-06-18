@@ -7,6 +7,8 @@ use App\Models\Answer;
 use App\Models\Category;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionController extends Controller
 {
@@ -27,73 +29,68 @@ class QuestionController extends Controller
     }
 
     public function store(Request $request)
-{
-    $data = $request->validate([
-        'category_id' => ['required', 'exists:categories,id'],
-        'image' => ['required', 'image', 'max:4096'],
-        'explanation' => ['nullable', 'string'],
-        'answer_type' => ['nullable'],
-        'difficulty' => ['required', 'integer', 'min:1', 'max:5'],
-
-        'answers' => ['required', 'array'],
-        'answers.*.answer_text' => ['nullable', 'string'],
-        'answers.*.is_correct' => ['nullable'],
-        'answers.*.feedback' => ['nullable', 'string'],
-    ]);
-
-    $answers = collect($data['answers'])
-        ->filter(fn ($answer) => !empty(trim($answer['answer_text'] ?? '')))
-        ->values();
-
-    if ($answers->count() < 3) {
-        return back()
-            ->withErrors(['answers' => 'Trebuie să introduci cel puțin 3 răspunsuri.'])
-            ->withInput();
-    }
-
-    if ($answers->count() > 6) {
-        return back()
-            ->withErrors(['answers' => 'Poți introduce maximum 6 răspunsuri.'])
-            ->withInput();
-    }
-
-    $correctCount = $answers
-        ->filter(fn ($answer) => isset($answer['is_correct']))
-        ->count();
-
-    if ($correctCount < 1) {
-        return back()
-            ->withErrors(['answers' => 'Trebuie să marchezi cel puțin un răspuns corect.'])
-            ->withInput();
-    }
-
-    $imagePath = $request->file('image')->store(
-    'questions',
-    'private'
-);
-
-    $question = Question::create([
-        'category_id' => $data['category_id'],
-        'image_path' => $imagePath,
-        'explanation' => $data['explanation'] ?? null,
-        'answer_type' => 'multiple',
-        'difficulty' => $data['difficulty'],
-        'is_active' => true,
-    ]);
-
-    foreach ($answers as $answerData) {
-        Answer::create([
-            'question_id' => $question->id,
-            'answer_text' => $answerData['answer_text'],
-            'is_correct' => isset($answerData['is_correct']),
-            'feedback' => $answerData['feedback'] ?? null,
+    {
+        $data = $request->validate([
+            'category_id' => ['required', 'exists:categories,id'],
+            'image' => ['required', 'image', 'max:4096'],
+            'explanation' => ['nullable', 'string'],
+            'difficulty' => ['required', 'integer', 'min:1', 'max:5'],
+            'answers' => ['required', 'array'],
+            'answers.*.answer_text' => ['nullable', 'string'],
+            'answers.*.is_correct' => ['nullable'],
+            'answers.*.feedback' => ['nullable', 'string'],
         ]);
-    }
 
-    return redirect()
-        ->route('admin.questions.index')
-        ->with('success', 'Întrebarea a fost creată.');
-}
+        $answers = collect($data['answers'])
+            ->filter(fn ($answer) => filled($answer['answer_text'] ?? null))
+            ->values();
+
+        if ($answers->count() < 3 || $answers->count() > 6) {
+            return back()
+                ->withErrors([
+                    'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
+                ])
+                ->withInput();
+        }
+
+        $correctCount = $answers
+            ->filter(fn ($answer) => isset($answer['is_correct']))
+            ->count();
+
+        if ($correctCount < 1) {
+            return back()
+                ->withErrors([
+                    'answers' => 'Trebuie să marchezi cel puțin un răspuns corect.',
+                ])
+                ->withInput();
+        }
+
+        $imagePath = $request->file('image')->store('questions', 'private');
+
+        DB::transaction(function () use ($data, $answers, $imagePath): void {
+            $question = Question::create([
+                'category_id' => $data['category_id'],
+                'image_path' => $imagePath,
+                'explanation' => $data['explanation'] ?? null,
+                'answer_type' => 'multiple',
+                'difficulty' => $data['difficulty'],
+                'is_active' => true,
+            ]);
+
+            foreach ($answers as $answerData) {
+                Answer::create([
+                    'question_id' => $question->id,
+                    'answer_text' => $answerData['answer_text'],
+                    'is_correct' => isset($answerData['is_correct']),
+                    'feedback' => $answerData['feedback'] ?? null,
+                ]);
+            }
+        });
+
+        return redirect()
+            ->route('admin.questions.index')
+            ->with('success', 'Întrebarea a fost creată.');
+    }
 
     public function edit(Question $question)
     {
@@ -109,57 +106,79 @@ class QuestionController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'image' => ['nullable', 'image', 'max:4096'],
             'explanation' => ['nullable', 'string'],
-            'answer_type' => ['nullable'],
             'difficulty' => ['required', 'integer', 'min:1', 'max:5'],
-            'is_active' => ['nullable'],
-
-            'answers' => ['required', 'array', 'min:2'],
-            'answers.*.answer_text' => ['required', 'string'],
+            'is_active' => ['nullable', 'boolean'],
+            'answers' => ['required', 'array'],
+            'answers.*.answer_text' => ['nullable', 'string'],
             'answers.*.is_correct' => ['nullable'],
             'answers.*.feedback' => ['nullable', 'string'],
         ]);
 
-        $correctCount = collect($data['answers'])
+        $answers = collect($data['answers'])
+            ->filter(fn ($answer) => filled($answer['answer_text'] ?? null))
+            ->values();
+
+        if ($answers->count() < 3 || $answers->count() > 6) {
+            return back()
+                ->withErrors([
+                    'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
+                ])
+                ->withInput();
+        }
+
+        $correctCount = $answers
             ->filter(fn ($answer) => isset($answer['is_correct']))
             ->count();
 
         if ($correctCount < 1) {
             return back()
-                ->withErrors(['answers' => 'Trebuie să marchezi cel puțin un răspuns corect.'])
+                ->withErrors([
+                    'answers' => 'Trebuie să marchezi cel puțin un răspuns corect.',
+                ])
                 ->withInput();
         }
 
-        if ($data['answer_type'] === 'single' && $correctCount !== 1) {
-            return back()
-                ->withErrors(['answers' => 'Pentru întrebările single trebuie să existe exact un răspuns corect.'])
-                ->withInput();
+        $oldImagePath = $question->image_path;
+        $newImagePath = null;
+
+        if ($request->hasFile('image')) {
+            $newImagePath = $request->file('image')->store('questions', 'private');
         }
 
-        $updateData = [
-            'category_id' => $data['category_id'],
-            'explanation' => $data['explanation'] ?? null,
-            'difficulty' => $data['difficulty'],
-            'is_active' => isset($data['is_active']),
-        ];
+        DB::transaction(function () use (
+            $question,
+            $data,
+            $answers,
+            $newImagePath
+        ): void {
+            $updateData = [
+                'category_id' => $data['category_id'],
+                'explanation' => $data['explanation'] ?? null,
+                'answer_type' => 'multiple',
+                'difficulty' => $data['difficulty'],
+                'is_active' => $request->boolean('is_active'),
+            ];
 
-if ($request->hasFile('image')) {
-    $updateData['image_path'] = $request->file('image')->store(
-        'questions',
-        'private'
-    );
-}
+            if ($newImagePath) {
+                $updateData['image_path'] = $newImagePath;
+            }
 
-        $question->update($updateData);
+            $question->update($updateData);
 
-        $question->answers()->delete();
+            $question->answers()->delete();
 
-        foreach ($data['answers'] as $answerData) {
-            Answer::create([
-                'question_id' => $question->id,
-                'answer_text' => $answerData['answer_text'],
-                'is_correct' => isset($answerData['is_correct']),
-                'feedback' => $answerData['feedback'] ?? null,
-            ]);
+            foreach ($answers as $answerData) {
+                Answer::create([
+                    'question_id' => $question->id,
+                    'answer_text' => $answerData['answer_text'],
+                    'is_correct' => isset($answerData['is_correct']),
+                    'feedback' => $answerData['feedback'] ?? null,
+                ]);
+            }
+        });
+
+        if ($newImagePath && $oldImagePath) {
+            Storage::disk('private')->delete($oldImagePath);
         }
 
         return redirect()
@@ -169,7 +188,13 @@ if ($request->hasFile('image')) {
 
     public function destroy(Question $question)
     {
+        $imagePath = $question->image_path;
+
         $question->delete();
+
+        if ($imagePath) {
+            Storage::disk('private')->delete($imagePath);
+        }
 
         return redirect()
             ->route('admin.questions.index')

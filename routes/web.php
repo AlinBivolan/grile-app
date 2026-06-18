@@ -30,16 +30,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-    Route::get('/quiz', [QuizController::class, 'index'])
-        ->name('quiz.index');
-
-    Route::post('/quiz/start', [QuizController::class, 'start'])
-        ->name('quiz.start');
+    Route::get('/questions/{question}/image', [QuizController::class, 'questionImage'])
+        ->name('questions.image');
 
     Route::post(
         '/questions/{question}/difficult',
         [QuizController::class, 'toggleDifficult']
     )->name('questions.difficult');
+
+    Route::get('/quiz', [QuizController::class, 'index'])
+        ->name('quiz.index');
+
+    Route::post('/quiz/start', [QuizController::class, 'start'])
+        ->name('quiz.start');
 
     Route::get('/quiz/{session}', [QuizController::class, 'show'])
         ->name('quiz.show');
@@ -65,9 +68,6 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/online-users', [OnlineUserController::class, 'index'])
             ->name('online-users.index');
-
-        Route::get('/questions/{question}/image', [QuizController::class, 'questionImage'])
-            ->name('questions.image');
     });
 
 require __DIR__.'/auth.php';

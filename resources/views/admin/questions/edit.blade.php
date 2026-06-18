@@ -11,7 +11,11 @@
 
                 @if ($errors->any())
                     <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                        Verifică formularul. Există erori.
+                        <ul class="list-disc pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
 
@@ -20,14 +24,13 @@
                       enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <input type="hidden" name="answer_type" value="multiple">
 
                     <div class="mb-4">
                         <label class="block font-medium mb-1">Categorie</label>
                         <select name="category_id" class="w-full border-gray-300 rounded">
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}"
-                                    @selected($question->category_id == $category->id)>
+                                    @selected(old('category_id', $question->category_id) == $category->id)>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
@@ -36,23 +39,14 @@
 
                     <div class="mb-4">
                         <label class="block font-medium mb-1">Imagine curentă</label>
-                        <img src="{{ Storage::disk('grile_images')->url($question->image_path) }}"
-                             class="w-96 border rounded mb-3">
+
+                        <img
+                            src="{{ route('questions.image', $question) }}"
+                            alt="Imagine curentă"
+                            class="w-96 border rounded mb-3">
 
                         <label class="block font-medium mb-1">Schimbă imaginea</label>
-                        <input type="file" name="image" class="w-full">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block font-medium mb-1">Tip răspuns</label>
-                        <select name="answer_type" class="w-full border-gray-300 rounded">
-                            <option value="single" @selected($question->answer_type === 'single')>
-                                Un singur răspuns corect
-                            </option>
-                            <option value="multiple" @selected($question->answer_type === 'multiple')>
-                                Mai multe răspunsuri corecte
-                            </option>
-                        </select>
+                        <input type="file" name="image" accept="image/*" class="w-full">
                     </div>
 
                     <div class="mb-4">
@@ -70,13 +64,16 @@
                             <input type="checkbox"
                                    name="is_active"
                                    value="1"
-                                   @checked($question->is_active)>
+                                   @checked(old('is_active', $question->is_active))>
                             Întrebare activă
                         </label>
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium mb-1">Explicație generală</label>
+                        <label class="block font-medium mb-1">
+                            Explicație generală, opțională
+                        </label>
+
                         <textarea name="explanation"
                                   rows="4"
                                   class="w-full border-gray-300 rounded">{{ old('explanation', $question->explanation) }}</textarea>
@@ -98,12 +95,12 @@
                                 <input type="checkbox"
                                        name="answers[{{ $i }}][is_correct]"
                                        value="1"
-                                       @checked($answer->is_correct)>
+                                       @checked(old("answers.$i.is_correct", $answer->is_correct))>
                                 Corect
                             </label>
 
                             <label class="block font-medium mt-3 mb-1">
-                                Feedback pentru acest răspuns
+                                Feedback pentru acest răspuns, opțional
                             </label>
 
                             <textarea name="answers[{{ $i }}][feedback]"
@@ -112,11 +109,13 @@
                         </div>
                     @endforeach
 
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded">
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded">
                         Salvează modificările
                     </button>
 
-                    <a href="{{ route('admin.questions.index') }}" class="ml-2 text-gray-600">
+                    <a href="{{ route('admin.questions.index') }}"
+                       class="ml-2 text-gray-600">
                         Înapoi
                     </a>
                 </form>
