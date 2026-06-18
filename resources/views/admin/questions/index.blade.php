@@ -121,18 +121,17 @@
 
                             <div class="lg:w-1/2">
                                 <div class="flex flex-wrap gap-2 mb-3">
-                                    <span class="px-2 py-1 bg-gray-200 rounded text-sm">
-                                        ID: {{ $question->id }}
-                                    </span>
+<span class="px-2 py-1 bg-gray-200 text-gray-900 rounded text-sm">
+    ID: {{ $question->id }}
+</span>
 
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                                        {{ $question->category->name }}
-                                    </span>
+<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+    {{ $question->category->name }}
+</span>
 
-                                    <span class="px-2 py-1 bg-gray-200 rounded text-sm">
-                                        Dificultate:
-                                        {{ $question->difficulty }}
-                                    </span>
+<span class="px-2 py-1 bg-gray-200 text-gray-900 rounded text-sm">
+    Dificultate: {{ $question->difficulty }}
+</span>
 
                                     <span class="px-2 py-1 rounded text-sm
                                         {{ $question->is_active
