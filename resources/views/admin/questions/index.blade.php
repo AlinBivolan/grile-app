@@ -1,115 +1,47 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Alege modul de lucru
-        </h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Întrebări</h2>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-
-            @if ($errors->any())
-                <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
-            @endif
-
             @if (session('success'))
-                <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
-                    {{ session('success') }}
-                </div>
+                <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">{{ session('success') }}</div>
             @endif
 
-            <div class="bg-white shadow rounded p-6 mb-6">
-                <h3 class="text-xl font-bold mb-4">Toate categoriile</h3>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @php
-                        $modes = [
-                            ['training', 'Antrenament', 'Toate întrebările, în ordine aleatorie.', 'bg-blue-600'],
-                            ['exam', 'Examen', '30 de întrebări aleatorii, fără feedback imediat.', 'bg-indigo-600'],
-                            ['hardcore', 'Hardcore', 'Prioritizează întrebările la care ai greșit.', 'bg-red-600'],
-                            ['wrong', 'Întrebări greșite', 'Repetă întrebările la care ai greșit.', 'bg-orange-600'],
-                            ['unseen', 'Întrebări nevăzute', 'Întrebări pe care nu le-ai rezolvat încă.', 'bg-green-600'],
-                        ];
-                    @endphp
-
-                    @foreach ($modes as [$value, $title, $description, $buttonClass])
-                        <form method="POST"
-                              action="{{ route('quiz.start') }}"
-                              class="border rounded p-4">
-                            @csrf
-                            <input type="hidden" name="mode" value="{{ $value }}">
-
-                            <div class="font-bold mb-2">{{ $title }}</div>
-
-                            <p class="text-sm text-gray-600 mb-4">
-                                {{ $description }}
-                            </p>
-
-                            <button class="px-4 py-2 {{ $buttonClass }} text-white rounded">
-                                Începe
-                            </button>
-                        </form>
-                    @endforeach
-
-                    <form method="POST"
-                          action="{{ route('quiz.start') }}"
-                          class="border rounded p-4">
-                        @csrf
-                        <input type="hidden" name="mode" value="difficult">
-
-                        <div class="font-bold mb-2">⭐ Întrebări dificile</div>
-
-                        <p class="text-sm text-gray-600 mb-2">
-                            Întrebările marcate de tine pentru repetare.
-                        </p>
-
-                        <p class="text-sm font-bold mb-4">
-                            {{ $difficultCount }} întrebări
-                        </p>
-
-                        <button class="px-4 py-2 bg-purple-600 text-white rounded">
-                            Începe
-                        </button>
-                    </form>
-                </div>
+            <div class="mb-4 flex gap-2">
+                <a href="{{ route('admin.questions.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded">Adaugă întrebare</a>
+                <a href="{{ route('admin.categories.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded">Categorii</a>
             </div>
 
-            <div class="bg-white shadow rounded p-6">
-                <h3 class="text-xl font-bold mb-4">Categorii</h3>
+            <div class="bg-white shadow rounded p-4">
+                @forelse ($questions as $question)
+                    <div class="border-b py-4 flex gap-4">
+                        <img src="{{ route('questions.image', $question) }}" alt="Imagine întrebare" class="w-48 border rounded">
 
-                @forelse ($categories as $category)
-                    <form method="POST"
-                          action="{{ route('quiz.start') }}"
-                          class="border rounded p-4 mb-4">
-                        @csrf
+                        <div class="flex-1">
+                            <div class="font-bold">{{ $question->category->name }}</div>
+                            <div class="text-sm text-gray-500">
+                                Dificultate: {{ $question->difficulty }} |
+                                Activă: {{ $question->is_active ? 'Da' : 'Nu' }}
+                            </div>
+                            <div class="mt-2 text-sm">Răspunsuri: {{ $question->answers->count() }}</div>
 
-                        <input type="hidden"
-                               name="category_id"
-                               value="{{ $category->id }}">
+                            <div class="mt-3 flex gap-2">
+                                <a href="{{ route('admin.questions.edit', $question) }}" class="px-3 py-1 bg-yellow-500 text-white rounded">Edit</a>
 
-                        <input type="hidden"
-                               name="mode"
-                               value="category">
-
-                        <div class="font-bold">{{ $category->name }}</div>
-
-                        <div class="text-sm text-gray-500 mb-3">
-                            {{ $category->questions_count }} întrebări
+                                <form method="POST" action="{{ route('admin.questions.destroy', $question) }}" onsubmit="return confirm('Sigur ștergi întrebarea?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="px-3 py-1 bg-red-600 text-white rounded">Șterge</button>
+                                </form>
+                            </div>
                         </div>
-
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded">
-                            Fă toate întrebările
-                        </button>
-                    </form>
+                    </div>
                 @empty
-                    <p class="text-gray-500">Nu există categorii încă.</p>
+                    <p>Nu există întrebări încă.</p>
                 @endforelse
             </div>
-
         </div>
     </div>
 </x-app-layout>
