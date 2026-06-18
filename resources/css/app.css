@@ -131,3 +131,38 @@ html.dark .text-blue-900 {
 html.dark .border-blue-300 {
     border-color: #3b82f6 !important;
 }
+
+/* Badge-uri admin în dark mode */
+
+html.dark .bg-gray-200 {
+    background-color: #374151 !important;
+}
+
+html.dark .text-gray-800,
+html.dark .text-gray-900 {
+    color: #f9fafb !important;
+}
+
+html.dark .bg-blue-100 {
+    background-color: #1e3a8a !important;
+}
+
+html.dark .text-blue-800 {
+    color: #dbeafe !important;
+}
+
+html.dark .bg-green-100 {
+    background-color: #14532d !important;
+}
+
+html.dark .text-green-800 {
+    color: #dcfce7 !important;
+}
+
+html.dark .bg-red-100 {
+    background-color: #7f1d1d !important;
+}
+
+html.dark .text-red-800 {
+    color: #fee2e2 !important;
+}

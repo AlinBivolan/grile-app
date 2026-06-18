@@ -11,17 +11,17 @@
                     </a>
                 </div>
 
-                <div class="ml-4">
+                <div class="ml-3 sm:ml-4">
                     @if (auth()->user()?->role === 'admin')
                         <a
                             href="{{ route('admin.online-users.index') }}"
-                            class="inline-flex items-center gap-2 px-3 py-2 rounded border text-sm font-bold hover:bg-gray-50"
+                            class="inline-flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg border text-xs sm:text-sm font-bold hover:bg-gray-50"
                         >
                             <span class="text-green-500">●</span>
                             {{ $onlineUsersCount }} online
                         </a>
                     @else
-                        <div class="inline-flex items-center gap-2 px-3 py-2 text-sm font-bold">
+                        <div class="inline-flex items-center gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm font-bold">
                             <span class="text-green-500">●</span>
                             {{ $onlineUsersCount }} online
                         </div>
@@ -69,21 +69,13 @@
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-
                 <button
                     type="button"
-                    onclick="
-                        document.documentElement.classList.toggle('dark');
-                        localStorage.setItem(
-                            'theme',
-                            document.documentElement.classList.contains('dark')
-                                ? 'dark'
-                                : 'light'
-                        );
-                    "
-                    class="mr-4 px-3 py-2 border rounded text-sm"
+                    onclick="toggleTheme()"
+                    class="mr-4 inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium hover:bg-gray-50"
                 >
-                    🌙 Temă
+                    <span class="theme-icon">🌙</span>
+                    <span>Temă</span>
                 </button>
 
                 <x-dropdown align="right" width="48">
@@ -119,10 +111,7 @@
 
                             <x-dropdown-link
                                 :href="route('logout')"
-                                onclick="
-                                    event.preventDefault();
-                                    this.closest('form').submit();
-                                "
+                                onclick="event.preventDefault(); this.closest('form').submit();"
                             >
                                 Deconectare
                             </x-dropdown-link>
@@ -131,10 +120,20 @@
                 </x-dropdown>
             </div>
 
-            <div class="-me-2 flex items-center sm:hidden">
+            <div class="-me-2 flex items-center gap-2 sm:hidden">
+                <button
+                    type="button"
+                    onclick="toggleTheme()"
+                    aria-label="Schimbă tema"
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-lg border text-lg hover:bg-gray-100"
+                >
+                    <span class="theme-icon">🌙</span>
+                </button>
+
                 <button
                     @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:bg-gray-100"
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                    aria-label="Deschide meniul"
                 >
                     <svg
                         class="h-6 w-6"
@@ -223,6 +222,15 @@
                     Întrebări
                 </x-responsive-nav-link>
             @endif
+
+            <button
+                type="button"
+                onclick="toggleTheme()"
+                class="flex w-full items-center gap-3 px-4 py-3 text-left text-base font-medium"
+            >
+                <span class="theme-icon">🌙</span>
+                Schimbă tema
+            </button>
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -246,10 +254,7 @@
 
                     <x-responsive-nav-link
                         :href="route('logout')"
-                        onclick="
-                            event.preventDefault();
-                            this.closest('form').submit();
-                        "
+                        onclick="event.preventDefault(); this.closest('form').submit();"
                     >
                         Deconectare
                     </x-responsive-nav-link>
@@ -257,4 +262,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+            document.querySelectorAll('.theme-icon').forEach(function (icon) {
+                icon.textContent = isDark ? '☀️' : '🌙';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const isDark = document.documentElement.classList.contains('dark');
+
+            document.querySelectorAll('.theme-icon').forEach(function (icon) {
+                icon.textContent = isDark ? '☀️' : '🌙';
+            });
+        });
+    </script>
 </nav>

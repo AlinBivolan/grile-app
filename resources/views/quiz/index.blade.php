@@ -1,15 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Alege modul de lucru
-        </h2>
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">
+                Alege modul de lucru
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Selectează modul potrivit pentru felul în care vrei să înveți.
+            </p>
+        </div>
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if ($errors->any())
-                <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
+                <div class="mb-6 rounded-xl border border-red-300 bg-red-100 p-4 text-red-800">
                     @foreach ($errors->all() as $error)
                         <div>{{ $error }}</div>
                     @endforeach
@@ -17,84 +23,267 @@
             @endif
 
             @if (session('success'))
-                <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+                <div class="mb-6 rounded-xl border border-green-300 bg-green-100 p-4 text-green-800">
                     {{ session('success') }}
                 </div>
             @endif
 
-            <div class="bg-white shadow rounded p-6 mb-6">
-                <h3 class="text-xl font-bold mb-4">Toate categoriile</h3>
+            <section class="mb-10">
+                <div class="mb-5 flex items-end justify-between gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">
+                            Moduri de învățare
+                        </h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <form method="POST" action="{{ route('quiz.start') }}" class="border rounded p-4">
+                        <p class="mt-1 text-sm text-gray-500">
+                            Folosește toate întrebările din platformă.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+
+                    <form
+                        method="POST"
+                        action="{{ route('quiz.start') }}"
+                        class="group rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                    >
                         @csrf
                         <input type="hidden" name="mode" value="training">
-                        <div class="font-bold mb-2">Antrenament</div>
-                        <p class="text-sm text-gray-600 mb-4">Toate întrebările, în ordine aleatorie.</p>
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded">Începe</button>
+
+                        <div class="mb-5 flex items-start justify-between">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-2xl text-white">
+                                🎯
+                            </div>
+
+                            <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
+                                Recomandat
+                            </span>
+                        </div>
+
+                        <h4 class="text-lg font-bold text-gray-900">
+                            Antrenament
+                        </h4>
+
+                        <p class="mt-2 min-h-[48px] text-sm text-gray-600">
+                            Parcurge toate întrebările în ordine aleatorie și primește feedback imediat.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700"
+                        >
+                            Începe antrenamentul
+                        </button>
                     </form>
 
-                    <form method="POST" action="{{ route('quiz.start') }}" class="border rounded p-4">
+                    <form
+                        method="POST"
+                        action="{{ route('quiz.start') }}"
+                        class="group rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                    >
                         @csrf
                         <input type="hidden" name="mode" value="exam">
-                        <div class="font-bold mb-2">Examen</div>
-                        <p class="text-sm text-gray-600 mb-4">30 de întrebări aleatorii, fără feedback imediat.</p>
-                        <button class="px-4 py-2 bg-indigo-600 text-white rounded">Începe</button>
+
+                        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-2xl text-white">
+                            📝
+                        </div>
+
+                        <h4 class="text-lg font-bold text-gray-900">
+                            Examen
+                        </h4>
+
+                        <p class="mt-2 min-h-[48px] text-sm text-gray-600">
+                            Primești 30 de întrebări aleatorii, fără feedback până la final.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="mt-6 w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700"
+                        >
+                            Simulează examenul
+                        </button>
                     </form>
 
-                    <form method="POST" action="{{ route('quiz.start') }}" class="border rounded p-4">
+                    <form
+                        method="POST"
+                        action="{{ route('quiz.start') }}"
+                        class="group rounded-2xl border border-red-200 bg-gradient-to-br from-red-50 to-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                    >
                         @csrf
                         <input type="hidden" name="mode" value="hardcore">
-                        <div class="font-bold mb-2">Hardcore</div>
-                        <p class="text-sm text-gray-600 mb-4">Prioritizează întrebările la care ai greșit.</p>
-                        <button class="px-4 py-2 bg-red-600 text-white rounded">Începe</button>
+
+                        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-red-600 text-2xl text-white">
+                            🔥
+                        </div>
+
+                        <h4 class="text-lg font-bold text-gray-900">
+                            Hardcore
+                        </h4>
+
+                        <p class="mt-2 min-h-[48px] text-sm text-gray-600">
+                            Primești mai ales întrebările la care ai avut cele mai multe dificultăți.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="mt-6 w-full rounded-xl bg-red-600 px-4 py-3 font-semibold text-white transition hover:bg-red-700"
+                        >
+                            Începe modul hardcore
+                        </button>
                     </form>
 
-                    <form method="POST" action="{{ route('quiz.start') }}" class="border rounded p-4">
+                    <form
+                        method="POST"
+                        action="{{ route('quiz.start') }}"
+                        class="group rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                    >
                         @csrf
                         <input type="hidden" name="mode" value="wrong">
-                        <div class="font-bold mb-2">Întrebări greșite</div>
-                        <p class="text-sm text-gray-600 mb-4">Repetă întrebările la care ai greșit.</p>
-                        <button class="px-4 py-2 bg-orange-600 text-white rounded">Începe</button>
+
+                        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-600 text-2xl text-white">
+                            ↻
+                        </div>
+
+                        <h4 class="text-lg font-bold text-gray-900">
+                            Întrebări greșite
+                        </h4>
+
+                        <p class="mt-2 min-h-[48px] text-sm text-gray-600">
+                            Repetă doar întrebările la care ai răspuns greșit anterior.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="mt-6 w-full rounded-xl bg-orange-600 px-4 py-3 font-semibold text-white transition hover:bg-orange-700"
+                        >
+                            Repetă greșelile
+                        </button>
                     </form>
 
-                    <form method="POST" action="{{ route('quiz.start') }}" class="border rounded p-4">
+                    <form
+                        method="POST"
+                        action="{{ route('quiz.start') }}"
+                        class="group rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 to-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                    >
                         @csrf
                         <input type="hidden" name="mode" value="unseen">
-                        <div class="font-bold mb-2">Întrebări nevăzute</div>
-                        <p class="text-sm text-gray-600 mb-4">Întrebări pe care nu le-ai rezolvat încă.</p>
-                        <button class="px-4 py-2 bg-green-600 text-white rounded">Începe</button>
+
+                        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-green-600 text-2xl text-white">
+                            ✨
+                        </div>
+
+                        <h4 class="text-lg font-bold text-gray-900">
+                            Întrebări nevăzute
+                        </h4>
+
+                        <p class="mt-2 min-h-[48px] text-sm text-gray-600">
+                            Rezolvă întrebările pe care nu le-ai întâlnit până acum.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="mt-6 w-full rounded-xl bg-green-600 px-4 py-3 font-semibold text-white transition hover:bg-green-700"
+                        >
+                            Descoperă întrebări noi
+                        </button>
                     </form>
 
-                    <form method="POST" action="{{ route('quiz.start') }}" class="border rounded p-4">
+                    <form
+                        method="POST"
+                        action="{{ route('quiz.start') }}"
+                        class="group rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                    >
                         @csrf
                         <input type="hidden" name="mode" value="difficult">
-                        <div class="font-bold mb-2">⭐ Întrebări dificile</div>
-                        <p class="text-sm text-gray-600 mb-2">Întrebările marcate de tine pentru repetare.</p>
-                        <p class="text-sm font-bold mb-4">{{ $difficultCount }} întrebări</p>
-                        <button class="px-4 py-2 bg-purple-600 text-white rounded">Începe</button>
+
+                        <div class="mb-5 flex items-start justify-between">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600 text-2xl text-white">
+                                ⭐
+                            </div>
+
+                            <span class="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-800">
+                                {{ $difficultCount }} salvate
+                            </span>
+                        </div>
+
+                        <h4 class="text-lg font-bold text-gray-900">
+                            Întrebări dificile
+                        </h4>
+
+                        <p class="mt-2 min-h-[48px] text-sm text-gray-600">
+                            Repetă întrebările pe care le-ai marcat manual pentru recapitulare.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="mt-6 w-full rounded-xl bg-purple-600 px-4 py-3 font-semibold text-white transition hover:bg-purple-700"
+                        >
+                            Repetă întrebările dificile
+                        </button>
                     </form>
+
                 </div>
-            </div>
+            </section>
 
-            <div class="bg-white shadow rounded p-6">
-                <h3 class="text-xl font-bold mb-4">Categorii</h3>
+            <section>
+                <div class="mb-5">
+                    <h3 class="text-xl font-bold text-gray-900">
+                        Categorii
+                    </h3>
 
-                @forelse ($categories as $category)
-                    <form method="POST" action="{{ route('quiz.start') }}" class="border rounded p-4 mb-4">
-                        @csrf
-                        <input type="hidden" name="category_id" value="{{ $category->id }}">
-                        <input type="hidden" name="mode" value="category">
+                    <p class="mt-1 text-sm text-gray-500">
+                        Rezolvă toate întrebările dintr-o anumită categorie.
+                    </p>
+                </div>
 
-                        <div class="font-bold">{{ $category->name }}</div>
-                        <div class="text-sm text-gray-500 mb-3">{{ $category->questions_count }} întrebări</div>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    @forelse ($categories as $category)
+                        <form
+                            method="POST"
+                            action="{{ route('quiz.start') }}"
+                            class="rounded-2xl border bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+                        >
+                            @csrf
 
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded">Fă toate întrebările</button>
-                    </form>
-                @empty
-                    <p class="text-gray-500">Nu există categorii încă.</p>
-                @endforelse
-            </div>
+                            <input
+                                type="hidden"
+                                name="category_id"
+                                value="{{ $category->id }}"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="mode"
+                                value="category"
+                            >
+
+                            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">
+                                        {{ $category->name }}
+                                    </h4>
+
+                                    <div class="mt-1 text-sm text-gray-500">
+                                        {{ $category->questions_count }} întrebări disponibile
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    class="shrink-0 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700"
+                                >
+                                    Începe categoria
+                                </button>
+                            </div>
+                        </form>
+                    @empty
+                        <div class="rounded-2xl border bg-white p-6 text-gray-500 md:col-span-2">
+                            Nu există categorii încă.
+                        </div>
+                    @endforelse
+                </div>
+            </section>
 
         </div>
     </div>
