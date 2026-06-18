@@ -148,7 +148,7 @@
                         <textarea
                             name="explanation"
                             rows="4"
-                            class="auto-diacritics w-full rounded-lg border-gray-300"
+                            class="auto-diacritics auto-diacritics w-full rounded-lg border-gray-300"
                             placeholder="Explicația afișată după răspuns..."
                         >{{ old('explanation', $question->explanation) }}</textarea>
                     </div>
@@ -206,7 +206,7 @@
                                     <textarea
                                         name="answers[{{ $i }}][answer_text]"
                                         rows="2"
-                                        class="auto-diacritics w-full rounded-lg border-gray-300"
+                                        class="auto-diacritics auto-diacritics w-full rounded-lg border-gray-300"
                                         placeholder="Scrie varianta de răspuns..."
                                     >{{ $answerText }}</textarea>
 
@@ -222,7 +222,7 @@
                                             <textarea
                                                 name="answers[{{ $i }}][feedback]"
                                                 rows="2"
-                                                class="auto-diacritics w-full rounded-lg border-gray-300"
+                                                class="auto-diacritics auto-diacritics w-full rounded-lg border-gray-300"
                                                 placeholder="Explică de ce această variantă este corectă sau greșită..."
                                             >{{ $answerFeedback }}</textarea>
                                         </div>

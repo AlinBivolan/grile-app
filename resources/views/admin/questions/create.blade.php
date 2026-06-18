@@ -50,7 +50,7 @@
                     <div class="mb-4">
                         <label class="block font-medium mb-1">Explicație generală, opțională</label>
                         <textarea name="explanation" rows="4"
-                                  class="w-full border-gray-300 rounded">{{ old('explanation') }}</textarea>
+                                  class="auto-diacritics w-full border-gray-300 rounded">{{ old('explanation') }}</textarea>
                     </div>
 
                     <h3 class="font-bold mt-6 mb-2">Răspunsuri</h3>
@@ -108,7 +108,7 @@
         <textarea
             name="answers[{{ $i }}][answer_text]"
             rows="2"
-            class="w-full border-gray-300 rounded"
+            class="auto-diacritics w-full border-gray-300 rounded"
             placeholder="Scrie varianta de răspuns...">{{ old("answers.$i.answer_text") }}</textarea>
 
         <label class="flex items-center gap-2 mt-3">
@@ -132,7 +132,7 @@
                 <textarea
                     name="answers[{{ $i }}][feedback]"
                     rows="2"
-                    class="w-full border-gray-300 rounded"
+                    class="auto-diacritics w-full border-gray-300 rounded"
                     placeholder="Exemplu: \(N^2\) sau Complexitatea este \(N \log N\)">{{ old("answers.$i.feedback") }}</textarea>
             </div>
         </details>
