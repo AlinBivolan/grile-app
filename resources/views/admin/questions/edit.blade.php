@@ -148,7 +148,7 @@
                         <textarea
                             name="explanation"
                             rows="4"
-                            class="auto-diacritics auto-diacritics w-full rounded-lg border-gray-300"
+                            class="auto-diacritics w-full rounded-lg border-gray-300"
                             placeholder="Explicația afișată după răspuns..."
                         >{{ old('explanation', $question->explanation) }}</textarea>
                     </div>
@@ -206,7 +206,7 @@
                                     <textarea
                                         name="answers[{{ $i }}][answer_text]"
                                         rows="2"
-                                        class="auto-diacritics auto-diacritics w-full rounded-lg border-gray-300"
+                                        class="auto-diacritics w-full rounded-lg border-gray-300"
                                         placeholder="Scrie varianta de răspuns..."
                                     >{{ $answerText }}</textarea>
 
@@ -222,7 +222,7 @@
                                             <textarea
                                                 name="answers[{{ $i }}][feedback]"
                                                 rows="2"
-                                                class="auto-diacritics auto-diacritics w-full rounded-lg border-gray-300"
+                                                class="auto-diacritics w-full rounded-lg border-gray-300"
                                                 placeholder="Explică de ce această variantă este corectă sau greșită..."
                                             >{{ $answerFeedback }}</textarea>
                                         </div>
@@ -256,37 +256,58 @@
         </div>
     </div>
 
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('edit-question-form');
-            const saveButton = document.getElementById('save-question-button');
-
-            const fixRomanianText = function (value) {
+            function normalizeRomanianText(value) {
                 return value
-                    .replace(/,s/g, 'ș')
-                    .replace(/,S/g, 'Ș')
-                    .replace(/,t/g, 'ț')
-                    .replace(/,T/g, 'Ț')
+                    .replace(/˘\s*a/g, 'ă')
+                    .replace(/˘\s*A/g, 'Ă')
+                    .replace(/a\s*˘/g, 'ă')
+                    .replace(/A\s*˘/g, 'Ă')
+                    .replace(/ˆ\s*a/g, 'â')
+                    .replace(/ˆ\s*A/g, 'Â')
+                    .replace(/a\s*ˆ/g, 'â')
+                    .replace(/A\s*ˆ/g, 'Â')
+                    .replace(/ˆ\s*[iı]/g, 'î')
+                    .replace(/ˆ\s*I/g, 'Î')
+                    .replace(/[iı]\s*ˆ/g, 'î')
+                    .replace(/I\s*ˆ/g, 'Î')
+                    .replace(/[¸,]\s*s/g, 'ș')
+                    .replace(/[¸,]\s*S/g, 'Ș')
+                    .replace(/s\s*¸/g, 'ș')
+                    .replace(/S\s*¸/g, 'Ș')
                     .replace(/ş/g, 'ș')
                     .replace(/Ş/g, 'Ș')
+                    .replace(/[¸,]\s*t/g, 'ț')
+                    .replace(/[¸,]\s*T/g, 'Ț')
+                    .replace(/t\s*¸/g, 'ț')
+                    .replace(/T\s*¸/g, 'Ț')
                     .replace(/ţ/g, 'ț')
-                    .replace(/Ţ/g, 'Ț');
-            };
+                    .replace(/Ţ/g, 'Ț')
+                    .replace(/ı/g, 'i');
+            }
 
             document.querySelectorAll('.auto-diacritics').forEach(function (field) {
-                field.addEventListener('paste', function () {
-                    window.setTimeout(function () {
-                        field.value = fixRomanianText(field.value);
-                    }, 0);
+                field.addEventListener('paste', function (event) {
+                    event.preventDefault();
+
+                    const clipboardText =
+                        event.clipboardData?.getData('text/plain') ?? '';
+
+                    const correctedText = normalizeRomanianText(clipboardText);
+                    const start = field.selectionStart ?? field.value.length;
+                    const end = field.selectionEnd ?? field.value.length;
+
+                    field.setRangeText(correctedText, start, end, 'end');
+                    field.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+
+                field.addEventListener('blur', function () {
+                    field.value = normalizeRomanianText(field.value);
                 });
             });
-
-            if (form && saveButton) {
-                form.addEventListener('submit', function () {
-                    saveButton.disabled = true;
-                    saveButton.textContent = 'Se salvează...';
-                });
-            }
         });
     </script>
+
 </x-app-layout>

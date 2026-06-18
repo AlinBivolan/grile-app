@@ -50,7 +50,7 @@
                     <div class="mb-4">
                         <label class="block font-medium mb-1">Explicație generală, opțională</label>
                         <textarea name="explanation" rows="4"
-                                  class="auto-diacritics w-full border-gray-300 rounded">{{ old('explanation') }}</textarea>
+                                  class="w-full border-gray-300 rounded">{{ old('explanation') }}</textarea>
                     </div>
 
                     <h3 class="font-bold mt-6 mb-2">Răspunsuri</h3>
@@ -58,46 +58,6 @@
 <p class="text-sm text-gray-500 mb-4">
     Completează între 3 și 9 variante. Cele nefolosite pot rămâne goale.
 </p>
-
-<div class="mb-4 p-4 bg-blue-50 border border-blue-300 rounded">
-    <div class="font-bold mb-2">
-        Formule, puteri și indici
-    </div>
-
-    <p class="text-sm mb-2">
-        Pune formulele între
-        <code>\(</code>
-        și
-        <code>\)</code>.
-    </p>
-
-    <div class="text-sm space-y-1">
-        <div>
-            Putere:
-            <code>\(N^2\)</code>
-        </div>
-
-        <div>
-            Putere cu literă:
-            <code>\(2^N\)</code>
-        </div>
-
-        <div>
-            Indice:
-            <code>\(a_i\)</code>
-        </div>
-
-        <div>
-            Indice mai lung:
-            <code>\(T_{max}\)</code>
-        </div>
-
-        <div>
-            Formulă:
-            <code>\(N \log N\)</code>
-        </div>
-    </div>
-</div>
 
 @for ($i = 0; $i < 9; $i++)
     <div class="mb-4 border rounded p-4">
@@ -108,7 +68,7 @@
         <textarea
             name="answers[{{ $i }}][answer_text]"
             rows="2"
-            class="auto-diacritics w-full border-gray-300 rounded"
+            class="w-full border-gray-300 rounded"
             placeholder="Scrie varianta de răspuns...">{{ old("answers.$i.answer_text") }}</textarea>
 
         <label class="flex items-center gap-2 mt-3">
@@ -132,8 +92,8 @@
                 <textarea
                     name="answers[{{ $i }}][feedback]"
                     rows="2"
-                    class="auto-diacritics w-full border-gray-300 rounded"
-                    placeholder="Exemplu: \(N^2\) sau Complexitatea este \(N \log N\)">{{ old("answers.$i.feedback") }}</textarea>
+                    class="w-full border-gray-300 rounded"
+                    placeholder="Explicație pentru această variantă...">{{ old("answers.$i.feedback") }}</textarea>
             </div>
         </details>
     </div>
@@ -151,4 +111,58 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function normalizeRomanianText(value) {
+                return value
+                    .replace(/˘\s*a/g, 'ă')
+                    .replace(/˘\s*A/g, 'Ă')
+                    .replace(/a\s*˘/g, 'ă')
+                    .replace(/A\s*˘/g, 'Ă')
+                    .replace(/ˆ\s*a/g, 'â')
+                    .replace(/ˆ\s*A/g, 'Â')
+                    .replace(/a\s*ˆ/g, 'â')
+                    .replace(/A\s*ˆ/g, 'Â')
+                    .replace(/ˆ\s*[iı]/g, 'î')
+                    .replace(/ˆ\s*I/g, 'Î')
+                    .replace(/[iı]\s*ˆ/g, 'î')
+                    .replace(/I\s*ˆ/g, 'Î')
+                    .replace(/[¸,]\s*s/g, 'ș')
+                    .replace(/[¸,]\s*S/g, 'Ș')
+                    .replace(/s\s*¸/g, 'ș')
+                    .replace(/S\s*¸/g, 'Ș')
+                    .replace(/ş/g, 'ș')
+                    .replace(/Ş/g, 'Ș')
+                    .replace(/[¸,]\s*t/g, 'ț')
+                    .replace(/[¸,]\s*T/g, 'Ț')
+                    .replace(/t\s*¸/g, 'ț')
+                    .replace(/T\s*¸/g, 'Ț')
+                    .replace(/ţ/g, 'ț')
+                    .replace(/Ţ/g, 'Ț')
+                    .replace(/ı/g, 'i');
+            }
+
+            document.querySelectorAll('.auto-diacritics').forEach(function (field) {
+                field.addEventListener('paste', function (event) {
+                    event.preventDefault();
+
+                    const clipboardText =
+                        event.clipboardData?.getData('text/plain') ?? '';
+
+                    const correctedText = normalizeRomanianText(clipboardText);
+                    const start = field.selectionStart ?? field.value.length;
+                    const end = field.selectionEnd ?? field.value.length;
+
+                    field.setRangeText(correctedText, start, end, 'end');
+                    field.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+
+                field.addEventListener('blur', function () {
+                    field.value = normalizeRomanianText(field.value);
+                });
+            });
+        });
+    </script>
+
 </x-app-layout>
