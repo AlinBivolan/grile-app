@@ -85,6 +85,35 @@
     Completează între 3 și 9 variante. Cele nefolosite pot rămâne goale.
 </p>
 
+<h3 class="font-bold mt-6 mb-2">Răspunsuri</h3>
+
+<p class="text-sm text-gray-500 mb-4">
+    Completează între 3 și 9 variante. Cele nefolosite pot rămâne goale.
+</p>
+
+<div class="mb-4 p-4 bg-blue-50 border border-blue-300 rounded">
+    <div class="font-bold mb-2">
+        Formule, puteri și indici
+    </div>
+
+    <p class="text-sm mb-2">
+        Pune formulele între
+        <code>\(</code>
+        și
+        <code>\)</code>.
+    </p>
+
+    <div class="text-sm space-y-1">
+        <div>Putere: <code>\(N^2\)</code></div>
+        <div>Putere cu literă: <code>\(2^N\)</code></div>
+        <div>Indice: <code>\(a_i\)</code></div>
+        <div>Indice mai lung: <code>\(T_{max}\)</code></div>
+        <div>Formulă: <code>\(N \log N\)</code></div>
+    </div>
+</div>
+
+@for ($i = 0; $i < 9; $i++)
+
 @for ($i = 0; $i < 9; $i++)
     @php
         $answer = $question->answers->get($i);
@@ -99,7 +128,7 @@
             name="answers[{{ $i }}][answer_text]"
             rows="2"
             class="w-full border-gray-300 rounded"
-            placeholder="Scrie varianta de răspuns...">{{ old("answers.$i.answer_text", $answer?->answer_text) }}</textarea>
+            placeholder="Exemplu: \(N^2\) sau Complexitatea este \(N \log N\)">{{ old("answers.$i.answer_text", $answer?->answer_text) }}</textarea>
 
         <label class="flex items-center gap-2 mt-3">
             <input

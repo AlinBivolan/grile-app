@@ -59,6 +59,46 @@
     Completează între 3 și 9 variante. Cele nefolosite pot rămâne goale.
 </p>
 
+<div class="mb-4 p-4 bg-blue-50 border border-blue-300 rounded">
+    <div class="font-bold mb-2">
+        Formule, puteri și indici
+    </div>
+
+    <p class="text-sm mb-2">
+        Pune formulele între
+        <code>\(</code>
+        și
+        <code>\)</code>.
+    </p>
+
+    <div class="text-sm space-y-1">
+        <div>
+            Putere:
+            <code>\(N^2\)</code>
+        </div>
+
+        <div>
+            Putere cu literă:
+            <code>\(2^N\)</code>
+        </div>
+
+        <div>
+            Indice:
+            <code>\(a_i\)</code>
+        </div>
+
+        <div>
+            Indice mai lung:
+            <code>\(T_{max}\)</code>
+        </div>
+
+        <div>
+            Formulă:
+            <code>\(N \log N\)</code>
+        </div>
+    </div>
+</div>
+
 @for ($i = 0; $i < 9; $i++)
     <div class="mb-4 border rounded p-4">
         <label class="block font-medium mb-1">
@@ -93,7 +133,7 @@
                     name="answers[{{ $i }}][feedback]"
                     rows="2"
                     class="w-full border-gray-300 rounded"
-                    placeholder="Explicație pentru această variantă...">{{ old("answers.$i.feedback") }}</textarea>
+                    placeholder="Exemplu: \(N^2\) sau Complexitatea este \(N \log N\)">{{ old("answers.$i.feedback") }}</textarea>
             </div>
         </details>
     </div>
