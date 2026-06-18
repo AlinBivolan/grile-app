@@ -142,7 +142,10 @@
             </span>
         </label>
 
-        <details class="mt-3" @if(old("answers.$i.feedback", $answer?->feedback)) open @endif>
+        <details
+    class="mt-3"
+    {{ old("answers.$i.feedback", $answer?->feedback) ? 'open' : '' }}
+>
             <summary class="cursor-pointer text-sm text-blue-600 font-medium">
                 + Feedback opțional
             </summary>
