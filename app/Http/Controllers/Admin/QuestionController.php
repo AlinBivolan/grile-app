@@ -14,9 +14,7 @@ class QuestionController extends Controller
 {
     public function index()
     {
-        $questions = Question::with('category', 'answers')
-            ->latest()
-            ->get();
+        $questions = Question::with('category', 'answers')->latest()->get();
 
         return view('admin.questions.index', compact('questions'));
     }
@@ -46,23 +44,15 @@ class QuestionController extends Controller
             ->values();
 
         if ($answers->count() < 3 || $answers->count() > 6) {
-            return back()
-                ->withErrors([
-                    'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
-                ])
-                ->withInput();
+            return back()->withErrors([
+                'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
+            ])->withInput();
         }
 
-        $correctCount = $answers
-            ->filter(fn ($answer) => isset($answer['is_correct']))
-            ->count();
-
-        if ($correctCount < 1) {
-            return back()
-                ->withErrors([
-                    'answers' => 'Trebuie să marchezi cel puțin un răspuns corect.',
-                ])
-                ->withInput();
+        if ($answers->filter(fn ($answer) => isset($answer['is_correct']))->count() < 1) {
+            return back()->withErrors([
+                'answers' => 'Trebuie să marchezi cel puțin un răspuns corect.',
+            ])->withInput();
         }
 
         $imagePath = $request->file('image')->store('questions', 'private');
@@ -87,8 +77,7 @@ class QuestionController extends Controller
             }
         });
 
-        return redirect()
-            ->route('admin.questions.index')
+        return redirect()->route('admin.questions.index')
             ->with('success', 'Întrebarea a fost creată.');
     }
 
@@ -119,27 +108,20 @@ class QuestionController extends Controller
             ->values();
 
         if ($answers->count() < 3 || $answers->count() > 6) {
-            return back()
-                ->withErrors([
-                    'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
-                ])
-                ->withInput();
+            return back()->withErrors([
+                'answers' => 'Trebuie să introduci între 3 și 6 răspunsuri.',
+            ])->withInput();
         }
 
-        $correctCount = $answers
-            ->filter(fn ($answer) => isset($answer['is_correct']))
-            ->count();
-
-        if ($correctCount < 1) {
-            return back()
-                ->withErrors([
-                    'answers' => 'Trebuie să marchezi cel puțin un răspuns corect.',
-                ])
-                ->withInput();
+        if ($answers->filter(fn ($answer) => isset($answer['is_correct']))->count() < 1) {
+            return back()->withErrors([
+                'answers' => 'Trebuie să marchezi cel puțin un răspuns corect.',
+            ])->withInput();
         }
 
         $oldImagePath = $question->image_path;
         $newImagePath = null;
+        $isActive = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
             $newImagePath = $request->file('image')->store('questions', 'private');
@@ -149,14 +131,15 @@ class QuestionController extends Controller
             $question,
             $data,
             $answers,
-            $newImagePath
+            $newImagePath,
+            $isActive
         ): void {
             $updateData = [
                 'category_id' => $data['category_id'],
                 'explanation' => $data['explanation'] ?? null,
                 'answer_type' => 'multiple',
                 'difficulty' => $data['difficulty'],
-                'is_active' => $request->boolean('is_active'),
+                'is_active' => $isActive,
             ];
 
             if ($newImagePath) {
@@ -164,7 +147,6 @@ class QuestionController extends Controller
             }
 
             $question->update($updateData);
-
             $question->answers()->delete();
 
             foreach ($answers as $answerData) {
@@ -181,23 +163,20 @@ class QuestionController extends Controller
             Storage::disk('private')->delete($oldImagePath);
         }
 
-        return redirect()
-            ->route('admin.questions.index')
+        return redirect()->route('admin.questions.index')
             ->with('success', 'Întrebarea a fost modificată.');
     }
 
     public function destroy(Question $question)
     {
         $imagePath = $question->image_path;
-
         $question->delete();
 
         if ($imagePath) {
             Storage::disk('private')->delete($imagePath);
         }
 
-        return redirect()
-            ->route('admin.questions.index')
+        return redirect()->route('admin.questions.index')
             ->with('success', 'Întrebarea a fost ștearsă.');
     }
 }
