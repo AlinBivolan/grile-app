@@ -23,6 +23,12 @@
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow rounded-xl p-5 sm:p-7">
 
+                @if (session('success'))
+                    <div class="mb-6 rounded-lg border border-green-300 bg-green-100 p-4 text-green-800">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 @if ($errors->any())
                     <div class="mb-6 rounded-lg border border-red-300 bg-red-100 p-4 text-red-800">
                         <div class="font-bold mb-2">
@@ -41,7 +47,7 @@
                     method="POST"
                     action="{{ route('admin.questions.update', $question) }}"
                     enctype="multipart/form-data"
-                    id="edit-question-form"
+                    
                 >
                     @csrf
                     @method('PUT')
@@ -183,6 +189,9 @@
                                 @endphp
 
                                 <div class="answer-card rounded-xl border p-4 sm:p-5">
+                                    @if ($answer)
+                                        <input type="hidden" name="answers[{{ $i }}][id]" value="{{ $answer->id }}">
+                                    @endif
                                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                                         <div class="font-bold">
                                             Varianta {{ chr(65 + $i) }}
@@ -243,7 +252,7 @@
 
                             <button
                                 type="submit"
-                                id="save-question-button"
+                                
                                 class="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
                             >
                                 Salvează modificările
@@ -257,57 +266,6 @@
     </div>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function normalizeRomanianText(value) {
-                return value
-                    .replace(/˘\s*a/g, 'ă')
-                    .replace(/˘\s*A/g, 'Ă')
-                    .replace(/a\s*˘/g, 'ă')
-                    .replace(/A\s*˘/g, 'Ă')
-                    .replace(/ˆ\s*a/g, 'â')
-                    .replace(/ˆ\s*A/g, 'Â')
-                    .replace(/a\s*ˆ/g, 'â')
-                    .replace(/A\s*ˆ/g, 'Â')
-                    .replace(/ˆ\s*[iı]/g, 'î')
-                    .replace(/ˆ\s*I/g, 'Î')
-                    .replace(/[iı]\s*ˆ/g, 'î')
-                    .replace(/I\s*ˆ/g, 'Î')
-                    .replace(/[¸,]\s*s/g, 'ș')
-                    .replace(/[¸,]\s*S/g, 'Ș')
-                    .replace(/s\s*¸/g, 'ș')
-                    .replace(/S\s*¸/g, 'Ș')
-                    .replace(/ş/g, 'ș')
-                    .replace(/Ş/g, 'Ș')
-                    .replace(/[¸,]\s*t/g, 'ț')
-                    .replace(/[¸,]\s*T/g, 'Ț')
-                    .replace(/t\s*¸/g, 'ț')
-                    .replace(/T\s*¸/g, 'Ț')
-                    .replace(/ţ/g, 'ț')
-                    .replace(/Ţ/g, 'Ț')
-                    .replace(/ı/g, 'i');
-            }
 
-            document.querySelectorAll('.auto-diacritics').forEach(function (field) {
-                field.addEventListener('paste', function (event) {
-                    event.preventDefault();
-
-                    const clipboardText =
-                        event.clipboardData?.getData('text/plain') ?? '';
-
-                    const correctedText = normalizeRomanianText(clipboardText);
-                    const start = field.selectionStart ?? field.value.length;
-                    const end = field.selectionEnd ?? field.value.length;
-
-                    field.setRangeText(correctedText, start, end, 'end');
-                    field.dispatchEvent(new Event('input', { bubbles: true }));
-                });
-
-                field.addEventListener('blur', function () {
-                    field.value = normalizeRomanianText(field.value);
-                });
-            });
-        });
-    </script>
 
 </x-app-layout>
